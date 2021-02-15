@@ -3,19 +3,13 @@ package arithmetic
 import (
 	"dkstar88/mathgen/generator"
 	"dkstar88/mathgen/types"
-	"errors"
 	"fmt"
 	"github.com/Knetic/govaluate"
 	log "github.com/sirupsen/logrus"
 	"math/rand"
 )
 
-const (
-	ADDITION       = "+"
-	SUBTRACTION    = "-"
-	MULTIPLICATION = "*"
-	DIVISION       = "/"
-)
+//const valid_operators = {"+", "-", "*", "/"}
 
 type GenerationRules struct {
 	Operations     []string
@@ -37,45 +31,76 @@ func Arithmetic(rules GenerationRules) (*generator.QuestionAnswer, error) {
 	questionNums := make([]int, rules.Len)
 	operators := make([]string, rules.Len-1)
 	retry := 0
+	answer := 0
 	question := ""
 	for i := 0; i < rules.Len; i++ {
 		questionNums[i] = randomMinMax(n1, n2)
-		if !intIsWithin(questionNums[i], rules.Min, rules.Max, rules.Difficulty) {
+		// Check if generated number is within difficulty setting
+		isValid := intIsWithin(questionNums[i], rules.Min, rules.Max, rules.Difficulty)
+		if !isValid {
 			// Regenerate
 			i--
-			if retry > MaxRetry {
+			if retry >= MaxRetry {
 				log.Warnf("retried too many times %d", retry)
 				return nil, fmt.Errorf("failed to generate addition %v", rules)
 			}
 			retry++
 			continue
 		}
-		if i >= rules.Len-1 {
-			question = question + fmt.Sprintf("%d", questionNums[i])
-		} else {
+		if i > 0 {
 			operator := randomOperator(rules.Operations)
-			operators[i] = operator
-			question = question + fmt.Sprintf("%d%s", questionNums[i], operator)
+			operators[i-1] = operator
+			question = formQuestion(questionNums, operators, i)
+			log.Info(question)
+			expression, err := govaluate.NewEvaluableExpression(question)
+			if err != nil {
+				log.Errorf("NewEvaluableExpression: %v", err)
+			}
+			result, err := expression.Evaluate(nil)
+			if err != nil {
+				log.Errorf("Evaluate: %v", err)
+			}
+			answer = int(result.(float64))
+			isValid = intIsWithin(answer, rules.Min, rules.Max, rules.Difficulty)
+			if rules.MustBeInt {
+				isValid = isValid && mustBeInt(result.(float64))
+			}
+			if !isValid {
+				// Regenerate
+				i--
+				if retry >= MaxRetry {
+					log.Warnf("retried too many times %d", retry)
+					return nil, fmt.Errorf("failed to generate addition %v", rules)
+				}
+				retry++
+				continue
+			}
 		}
 	}
-	expression, err := govaluate.NewEvaluableExpression(question)
-	if err != nil {
-		log.Errorf("NewEvaluableExpression: %v", err)
-	}
-	result, err := expression.Evaluate(nil)
-	if err != nil {
-		log.Errorf("Evaluate: %v", err)
-	}
-	answer := int(result.(float64))
 
-	if intIsWithin(answer, rules.Min, rules.Max, rules.Difficulty) {
-		return &generator.QuestionAnswer{
-			Question: question,
-			Answer:   fmt.Sprintf("%d", answer),
-		}, nil
-	}
-	return nil, errors.New("failed to generate")
+	return &generator.QuestionAnswer{
+		Question: question,
+		Answer:   fmt.Sprintf("%d", answer),
+	}, nil
 
+}
+
+const IntPrecision = 10000
+
+func formQuestion(numbers []int, operators []string, length int) string {
+	result := ""
+	for i := 0; i <= length; i++ {
+		result = result + fmt.Sprintf("%d", numbers[i])
+		if i < length {
+			result = result + operators[i]
+		}
+	}
+	return result
+}
+
+func mustBeInt(result float64) bool {
+	flt := result
+	return int(flt)*IntPrecision == int(flt*IntPrecision)
 }
 
 func randomOperator(operations []string) string {
@@ -113,6 +138,7 @@ func init() {
 			Max:        types.IntDef(config["max"], 100),
 			Min:        types.IntDef(config["min"], 1),
 			Difficulty: types.IntDef(config["difficulty"], 0),
+			MustBeInt:  types.BoolDef(config["mustBeInt"], true),
 		}
 		return Arithmetic(rule)
 	})

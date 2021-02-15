@@ -38,3 +38,12 @@ func StrArrDef(v interface{}, _default []string) []string {
 	}
 	return result
 }
+
+func BoolDef(v interface{}, _default bool) bool {
+	result, ok := v.(bool)
+	if !ok {
+		log.Printf("Error BoolDef: %v", v)
+		return _default
+	}
+	return result
+}

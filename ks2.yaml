@@ -7,7 +7,7 @@ meta:
 
 generators:
   - type: arithmetic
-    quantity: 10
+    quantity: 12
     score: 10
     params:
       operations: ["+"]
@@ -15,7 +15,7 @@ generators:
       len: 2
       max: 100
   - type: arithmetic
-    quantity: 10
+    quantity: 12
     score: 10
     params:
       operations: ["-"]
@@ -23,7 +23,7 @@ generators:
       len: 2
       min: 0
   - type: arithmetic
-    quantity: 10
+    quantity: 12
     score: 10
     params:
       operations: ["+", "-"]
@@ -31,10 +31,13 @@ generators:
       len: 3
       max: 999
       min: 0
-#  - type: subtraction
-#    quantity: 10
-#    score: 10
-#    params:
-#      nums: [100,999]
-#      len: 2
-#      max: 0
+  - type: arithmetic
+    quantity: 12
+    score: 10
+    params:
+      operations: ["+", "-", "*", "/"]
+      nums: [10,50]
+      len: 3
+      max: 999
+      min: 0
+      mustBeInt: true
