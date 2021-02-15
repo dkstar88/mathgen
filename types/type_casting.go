@@ -1,21 +1,28 @@
 package types
 
-import "log"
+import (
+	"log"
+)
 
 func IntDef(v interface{}, _default int) int {
-	result, err := v.(int)
-	if err {
-		log.Printf("Error IntDef: %v", err)
+	result, ok := v.(int)
+	if !ok {
+		log.Printf("Error IntDef: %v", v)
 		return _default
 	}
 	return result
 }
 
 func IntArrDef(v interface{}, _default []int) []int {
-	result, err := v.([]int)
-	if err {
-		log.Printf("Error IntArrDef: %v", err)
+	intArr, ok := v.([]interface{})
+	if !ok {
+		log.Printf("Error IntArrDef: %v", v)
 		return _default
+	}
+	result := make([]int, len(intArr))
+	for i, v := range intArr {
+		result[i] = v.(int)
 	}
 	return result
 }
+

@@ -16,7 +16,7 @@ func Subtraction(rules GenerationRules) (*generator.QuestionAnswer, error) {
 	for i := 0; i < rules.Len; i++ {
 		questionNums[i] = randomMinMax(n1, n2)
 		thisDiff := detectDifficultyInt(questionNums[i])
-		if answer-questionNums[i] < rules.Min || difficulty+thisDiff > rules.Difficulty {
+		if answer-questionNums[i] < rules.Min || (rules.Difficulty > 0 && thisDiff > rules.Difficulty) {
 			// Regenerate
 			i--
 			if retry > MaxRetry {
@@ -29,7 +29,7 @@ func Subtraction(rules GenerationRules) (*generator.QuestionAnswer, error) {
 		difficulty += thisDiff
 	}
 	return &generator.QuestionAnswer{
-		Question:   joinInts(questionNums, "+"),
+		Question:   joinInts(questionNums, "-"),
 		Answer:     fmt.Sprintf("%d", answer),
 		Difficulty: difficulty,
 	}, nil
@@ -38,11 +38,11 @@ func Subtraction(rules GenerationRules) (*generator.QuestionAnswer, error) {
 func init() {
 	generator.RegisterGenerator("Subtraction", func(config map[string]interface{}) (*generator.QuestionAnswer, error) {
 		rule := GenerationRules{
-			Nums:       types.IntArrDef(config["min"], []int{1, 10}),
+			Nums:       types.IntArrDef(config["nums"], []int{1, 10}),
 			Len:        types.IntDef(config["len"], 2),
 			Max:        types.IntDef(config["max"], 100),
 			Min:        types.IntDef(config["min"], 1),
-			Difficulty: types.IntDef(config["difficulty"], 2),
+			Difficulty: types.IntDef(config["difficulty"], 0),
 		}
 		return Subtraction(rule)
 	})

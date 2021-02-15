@@ -10,8 +10,7 @@ import (
 type GeneratorFile struct {
 	Meta struct {
 		Author string `yaml:"author,omitempty"`
-		Date   struct {
-		} `yaml:"date,omitempty"`
+		Date   string `yaml:"date,omitempty"`
 		Version string   `yaml:"version,omitempty"`
 		Label   []string `yaml:"label,omitempty"`
 		Year    []int    `yaml:"year,omitempty"`

@@ -13,13 +13,13 @@ generators:
       nums: [0,99]
       len: 2
       max: 100
-  - type: subtraction
-    quantity: 10
-    score: 10
-    params:
-      nums: [0,99]
-      len: 2
-      min: 0
+#  - type: subtraction
+#    quantity: 10
+#    score: 10
+#    params:
+#      nums: [0,99]
+#      len: 2
+#      min: 0
   - type: addition
     quantity: 10
     score: 10
@@ -27,10 +27,10 @@ generators:
       nums: [10,979]
       len: 2
       max: 999
-  - type: subtraction
-    quantity: 10
-    score: 10
-    params:
-      nums: [100,999]
-      len: 2
-      max: 0
+#  - type: subtraction
+#    quantity: 10
+#    score: 10
+#    params:
+#      nums: [100,999]
+#      len: 2
+#      max: 0
