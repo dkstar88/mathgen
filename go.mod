@@ -3,6 +3,7 @@ module dkstar88/mathgen
 go 1.15
 
 require (
+	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/phpdave11/gofpdi v1.0.13 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

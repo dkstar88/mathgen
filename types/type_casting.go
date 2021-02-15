@@ -26,3 +26,15 @@ func IntArrDef(v interface{}, _default []int) []int {
 	return result
 }
 
+func StrArrDef(v interface{}, _default []string) []string {
+	strArr, ok := v.([]interface{})
+	if !ok {
+		log.Printf("Error IntArrDef: %v", v)
+		return _default
+	}
+	result := make([]string, len(strArr))
+	for i, v := range strArr {
+		result[i] = v.(string)
+	}
+	return result
+}
