@@ -76,7 +76,7 @@ func init() {
 		configFile = args[0]
 		if seed != "" {
 			h := fnv.New64a()
-			h.Write([]byte(seed))
+			_, _ = h.Write([]byte(seed))
 			rand.Seed(int64(h.Sum64()))
 		} else {
 			rand.Seed(time.Now().UnixNano())

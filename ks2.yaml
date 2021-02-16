@@ -9,6 +9,7 @@ generators:
   - type: arithmetic
     quantity: 12
     score: 10
+    columns: 3
     params:
       operations: ["+"]
       nums: [0,99]
