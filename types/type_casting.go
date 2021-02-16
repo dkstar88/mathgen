@@ -1,13 +1,8 @@
 package types
 
-import (
-	"log"
-)
-
 func IntDef(v interface{}, _default int) int {
 	result, ok := v.(int)
 	if !ok {
-		log.Printf("Error IntDef: %v", v)
 		return _default
 	}
 	return result
@@ -16,7 +11,6 @@ func IntDef(v interface{}, _default int) int {
 func IntArrDef(v interface{}, _default []int) []int {
 	intArr, ok := v.([]interface{})
 	if !ok {
-		log.Printf("Error IntArrDef: %v", v)
 		return _default
 	}
 	result := make([]int, len(intArr))
@@ -29,7 +23,6 @@ func IntArrDef(v interface{}, _default []int) []int {
 func StrArrDef(v interface{}, _default []string) []string {
 	strArr, ok := v.([]interface{})
 	if !ok {
-		log.Printf("Error IntArrDef: %v", v)
 		return _default
 	}
 	result := make([]string, len(strArr))
@@ -42,7 +35,6 @@ func StrArrDef(v interface{}, _default []string) []string {
 func BoolDef(v interface{}, _default bool) bool {
 	result, ok := v.(bool)
 	if !ok {
-		log.Printf("Error BoolDef: %v", v)
 		return _default
 	}
 	return result

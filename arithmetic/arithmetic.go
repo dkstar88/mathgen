@@ -128,7 +128,7 @@ func intIsWithin(i, min, max, diff int) bool {
 	return true
 }
 
-func init() {
+func Register() {
 	generator.RegisterGenerator("arithmetic", func(config map[string]interface{}) (*generator.QuestionAnswer, error) {
 		log.Infof("Wrap Arithmetic: %v", config)
 		rule := GenerationRules{

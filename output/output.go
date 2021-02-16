@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/signintech/gopdf"
 	log "github.com/sirupsen/logrus"
+	"path"
+	"strings"
 )
 
 func initPdf(pdf *gopdf.GoPdf, header string) {
@@ -39,7 +41,7 @@ func CheckErr(err error) {
 	}
 }
 
-func GenerateTestPaper(questions []generator.QuestionAnswer, title string) {
+func GenerateTestPaper(questions []generator.QuestionAnswer, title, testPdf, answerPdf string) {
 
 	pdf := gopdf.GoPdf{}
 	pdfAnswer := gopdf.GoPdf{}
@@ -76,6 +78,24 @@ func GenerateTestPaper(questions []generator.QuestionAnswer, title string) {
 		fmt.Println(q.Question + "=" + q.Answer)
 	}
 
-	CheckErr(pdf.WritePdf(title + ".pdf"))
-	CheckErr(pdfAnswer.WritePdf(title + " answers.pdf"))
+	testPdf = appendFileExt(testPdf, ".pdf")
+	if len(answerPdf) == 0 {
+		answerPdf = changeFileExt(testPdf, "-answers.pdf")
+	}
+
+	CheckErr(pdf.WritePdf(testPdf))
+	CheckErr(pdfAnswer.WritePdf(answerPdf))
+}
+
+func changeFileExt(filename string, newExt string) string {
+	ext := path.Ext(filename)
+	return filename[0:len(filename)-len(ext)] + newExt
+}
+
+func appendFileExt(filename string, ext string) string {
+	currExt := path.Ext(filename)
+	if !strings.EqualFold(currExt, ext) {
+		return changeFileExt(filename, ext)
+	}
+	return filename
 }
